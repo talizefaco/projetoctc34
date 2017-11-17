@@ -21,7 +21,7 @@ class TreeNode:
 		self.leftChild = left
 		self.rightChild = right
 		self.parent = parent
-
+		
 	def hasLeftChild(self):
 		return self.leftChild
 
@@ -52,34 +52,59 @@ class TreeNode:
 	def setValue(self, value):
 		self.value = value
 
-	def createLeftChild(self, leftChild=None):
-		self.leftChild = TreeNode("", leftChild,None , self)
+	def setLeftChild(self, leftChild):
+		leftChild.parent = self
+		self.leftChild = leftChild
 		return self.leftChild
 
-	def createRightChild(self, rightChild=None):
-		self.rightChild = TreeNode("", None, rightChild, self)
+	def setRightChild(self, rightChild):
+		rightChild.parent = self
+		self.rightChild = rightChild
+		return self.rightChild
+
+	def createLeftChild(self):
+		self.leftChild = TreeNode("", None, None, self)
+		return self.leftChild
+
+	def createRightChild(self):
+		self.rightChild = TreeNode("", None, None, self)
 		return self.rightChild
 
 	def printValue(self):
 		print(self.value)
 
-	def drawNode(self):
+	def drawNode(self,x, jmpLine):
+		#print(self.isLeftChild(),end="")
+		if self.isLeftChild() or self.isRoot():
+			for i in range(x+1):
+				print("  ", end="")
+
+		else:
+			print("   ", end="")
+
 		print(self.value, end="")
-		print("	", end="")
+		
+		if jmpLine:
+			print("	")
 
 		if self.hasBothChildren():
-			print("\n"+"/	\\")
-			self.hasLeftChild().drawNode()
-			self.hasRightChild().drawNode()
-		
+			for m in range(x):
+				print("  ", end="")
+			print("/   \\")
+			self.hasLeftChild().drawNode(x-1, False)
+			self.hasRightChild().drawNode(x+1, True)
+
 		elif self.hasLeftChild():
+			for j in range(x-1):
+				print("  ", end="")
 			print("/", end="")
-			self.hasLeftChild().drawNode()
+			self.hasLeftChild().drawNode(x-1, True)
 
 		elif self.hasRightChild():
+			for k in range(x+1):
+				print("  ", end="")
 			print("		\\")
-
-			self.hasRightChild().drawNode()
+			self.hasRightChild().drawNode(x+2, True)
 
 class Tree:
 	def __init__(self):
@@ -89,7 +114,7 @@ class Tree:
 		return self.root
 
 	def tela(self):
-		self.root.drawNode()
+		self.root.drawNode(10, True)
 
 exp = input("Cadeia a ser avaliada:")
 
@@ -255,12 +280,18 @@ if est == "aceita":
 
 			else:
 				nodeAux = node
-				node = node.getParent()
-				node = node.createRightChild()
-				node.createLeftChild(nodeAux)
+				if node.getParent() != None:
+					node = node.getParent()
+					node = node.createRightChild()
+				else:
+					newTree = Tree()
+					node = newTree.getRoot()
+					arvore = newTree
+				
 				node.setValue(list[i])
+				aux = node.setLeftChild(nodeAux)
 				node =  node.createRightChild()
-		
+
 		elif list[i] == ")":
 			node = node.getParent()
 

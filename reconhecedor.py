@@ -15,6 +15,8 @@
 #Professor: Forster S2                                                             |
 #----------------------------------------------------------------------------------|
 
+from collections import deque
+
 class TreeNode:
 	def __init__(self,value="",left=None,right=None,parent=None):
 		self.value = value
@@ -73,38 +75,94 @@ class TreeNode:
 	def printValue(self):
 		print(self.value)
 
-	def drawNode(self,x, jmpLine):
-		#print(self.isLeftChild(),end="")
-		if self.isLeftChild() or self.isRoot():
-			for i in range(x+1):
-				print("  ", end="")
+	def traverse(self):
+		thislevel = [self]
+		middle = "       "
+		blankspaces = ""
+		a = '                                  '
+		print(a + str(self.value))
+		i = 3
 
-		else:
-			print("   ", end="")
+		while thislevel:
+			nextlevel = []
+			printlevel = []
+			length = len(a) - i
+			a = a[:length]
+			printlevel.append(a)
+			middle = middle[:len(middle) - 1]
 
-		print(self.value, end="")
+			for n in thislevel:
+				if n.hasBothChildren():
+					children = str(n.leftChild.value)
+					children = children + middle
+					children = children + str(n.rightChild.value)
+					children = children + "  "
+					printlevel.append(children)
+					
+					nextlevel.append(n.leftChild)
+					nextlevel.append(n.rightChild)
+
+				elif n.hasLeftChild():
+					children = str(n.leftChild.value)
+					children = children + "       "
+					printlevel.append(children)
+					
+					nextlevel.append(n.leftChild)
+
+				elif n.hasRightChild():
+					children = "     "
+					children = str(n.rightChild.value)
+					children = children + "  "
+					printlevel.append(children)
+					
+					nextlevel.append(n.leftChild)
+
+				else:
+					blankspaces = blankspaces + "       "
+					# printlevel.append("      ")
+
+			printlevel.insert(0, blankspaces)
+			# print(len(blankspaces),end="")
+			# print("--",end="")
+			# print(len(a),end="")
+			for m in printlevel:
+				print(m, end="")
+			print("")
+			
+			thislevel = nextlevel
+			i = i + 2
+
+	# def drawNode(self,x, jmpLine):
+	# 	if self.isLeftChild() or self.isRoot():
+	# 		for i in range(x+1):
+	# 			print("  ", end="")
+
+	# 	else:
+	# 		print("   ", end="")
+
+	# 	print(self.value, end="")
 		
-		if jmpLine:
-			print("	")
+	# 	if jmpLine:
+	# 		print("	")
 
-		if self.hasBothChildren():
-			for m in range(x):
-				print("  ", end="")
-			print("/   \\")
-			self.hasLeftChild().drawNode(x-1, False)
-			self.hasRightChild().drawNode(x+1, True)
+	# 	if self.hasBothChildren():
+	# 		for m in range(x):
+	# 			print("  ", end="")
+	# 		print("/   \\")
+	# 		self.hasLeftChild().drawNode(x-1, False)
+	# 		self.hasRightChild().drawNode(x+1, True)
 
-		elif self.hasLeftChild():
-			for j in range(x-1):
-				print("  ", end="")
-			print("/", end="")
-			self.hasLeftChild().drawNode(x-1, True)
+	# 	elif self.hasLeftChild():
+	# 		for j in range(x-1):
+	# 			print("  ", end="")
+	# 		print("/", end="")
+	# 		self.hasLeftChild().drawNode(x-1, True)
 
-		elif self.hasRightChild():
-			for k in range(x+1):
-				print("  ", end="")
-			print("		\\")
-			self.hasRightChild().drawNode(x+2, True)
+	# 	elif self.hasRightChild():
+	# 		for k in range(x+1):
+	# 			print("  ", end="")
+	# 		print("		\\")
+	# 		self.hasRightChild().drawNode(x+2, True)
 
 class Tree:
 	def __init__(self):
@@ -114,7 +172,7 @@ class Tree:
 		return self.root
 
 	def tela(self):
-		self.root.drawNode(10, True)
+		self.root.traverse()
 
 exp = input("Cadeia a ser avaliada:")
 

@@ -89,29 +89,6 @@ def createTree(list):
 
 	return arvore
 
-def createSubtree(lista, indice):
-
-	node = TreeNode()
-	pilha = Stack()
-	pilha.push(lista[indice])
-
-	while(not pilha.isEmpty()):
-
-		if(lista[indice] == "("):
-			newNode = createSubtree(lista, indice)
-		elif(lista[indice] == ")"):
-			pilha.pop()
-		elif(lista[indice] in operators):
-			node.setValue(lista[indice - 1])
-
-		elif(lista[indice].isnumeric()):
-			numero = ""
-			while(lista[indice].isnumeric()):
-				numero += lista[indice]
-				indice += 1
-			node.setValue(numero)
-
-
 def main():
 
 	exp = input("Cadeia a ser avaliada:")
